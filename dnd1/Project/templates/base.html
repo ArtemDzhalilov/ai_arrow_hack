@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+  
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>DnD AI</title>
+        <link rel="icon" href="{% static 'dnd_down.png' %}" type="image/x-icon">
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        
+        <link href="https://fonts.googleapis.com/css2?family=Jacquarda+Bastarda+9&family=Sixtyfour&family=Workbench&display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.4.0.min.js" crossorigin="anonymous"></script>
+        <script src="{% static 'js/loading.js' %}"></script>
+
+        {% block css %}{% endblock css %}
+    </head>
+
+    <body class="background" id="font1">
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+            <img height="55" src="{% static 'DnD.png' %}" alt="" />
+            
+            <!-- 40px is cool too -->
+            <div style="display: flex; gap: 40px;">
+                <h1><a href="guide">GUIDE</a></h1>
+            </div>
+        </div>
+
+        <hr style="margin-top: 0px; margin-bottom: 0px;">
+
+        <div class="container">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </body>
+</html>

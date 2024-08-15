@@ -1,0 +1,64 @@
+import torch
+import torch.nn.functional as F
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from huggingface_hub import hf_hub_download
+from vllm import LLM, SamplingParams
+from torch.nn.functional import cosine_similarity
+import logging
+
+# Загрузка первой модели для эмбеддингов
+old_model_path = "second-state/E5-Mistral-7B-Instruct-Embedding-GGUF"
+tokenizer_old = AutoTokenizer.from_pretrained(old_model_path, gguf_file=old_model_file)
+model_old = AutoModelForCausalLM.from_pretrained(old_model_path, gguf_file=old_model_file)
+
+# Загрузка второй модели для генерации текста
+new_model_name = "lmstudio-community/gemma-2-27b-it-GGUF"
+new_model_file = "gemma-2-27b-it-Q4_K_M.gguf"
+tokenizer_new = AutoTokenizer.from_pretrained(new_model_path, gguf_file=new_model_file)
+model_new = AutoModelForCausalLM.from_pretrained(new_model_path, gguf_file=new_model_file)
+
+# Передача второй модели в vllm для инференса
+llm_new = LLM(model=model_new, tokenizer=tokenizer_new)
+print("All is ready!")
+
+def generate_role(requirements):
+    prompt = f"Сгенерируй роль, которая лучше всего подойдёт llm при прохождении собеседования на роль со следующим описанием. Выведи ТОЛЬКО роль: {requirements}"
+    sampling_params = SamplingParams(max_tokens=150)
+    response = llm_new(prompt, sampling_params=sampling_params)
+    return response['choices'][0]['text'].strip()
+
+def create_question_with_answer(history, requirements):
+    history_text = f"В течении интервью уже были заданы следующие вопросы и получены следующие ответы: {history}." if len(history) > 0 else ""
+    role = generate_role(requirements)
+    prompt = f"""
+    Ты проводишь алгоритмическое интервью на должность {role}. Описание вакансии: {requirements}. {history_text} 
+    Твоя задача - сгенерировать следующий вопрос так, чтобы он максимально подходил под описание вакансии, а также проверял компетенции интервьюируемого в самых нужных областях. Вопрос должен иметь однозначный ответ, и затрагивать только алгоритмы и структуры данных.
+    Ты должен сгенерировать только вопрос.
+    """
+    sampling_params = SamplingParams(max_tokens=150)
+    response = llm_new(prompt, sampling_params=sampling_params)
+    print(response['choices'][0])
+    question = response['choices'][0]['text'].strip()
+    answer = answer_question(question, role)
+    return question, answer
+
+def answer_question(question, role):
+    prompt = f"""
+    Ты один из лучших {role} в мире и ты собеседуешься в IT компанию, твоя задача максимально точно ответить на следующий вопрос: {question}. Твой ответ должен быть максимально кратким и точным. Тебе нужно только ответить на вопрос.
+    """
+    sampling_params = SamplingParams(max_tokens=150)
+    response = llm_new(prompt, sampling_params=sampling_params)
+    return response['choices'][0]['text'].strip()
+
+def compare_answers(user_answer, correct_answer):
+    with torch.no_grad():
+        # Используем старую модель для создания эмбеддингов
+        inputs_user = tokenizer_old(user_answer, return_tensors='pt')
+        inputs_correct = tokenizer_old(correct_answer, return_tensors='pt')
+        
+        embedding1 = model_old(**inputs_user).last_hidden_state.mean(dim=1)
+        embedding2 = model_old(**inputs_correct).last_hidden_state.mean(dim=1)
+        
+        score = cosine_similarity(embedding1, embedding2, dim=1)
+        return score.item()
+н

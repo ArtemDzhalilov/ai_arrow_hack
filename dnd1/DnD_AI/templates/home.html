@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
+{% endblock css %}
+
+{% block content %}
+    <div id="overlay">
+        <div id="loading-popup">
+            <p>Starting campaign creation...</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <h1>Welcome to DnD AI!</h1>
+            <br>
+            <h4>Are you ready to embark on the most </h4>
+            <h4>epic and fulfilling adventure of your life?</h4>
+        </div>
+        <div class="buttons">
+            <a href="campaignselection" class="btnSC">Select a campaign!</a>
+            <a href="campaigncreation" class="btnNC" onclick="loading('Creating a new campaign','campaigncreation')">Create a new campaign!</a>
+        </div>
+    </div>
+{% endblock content %}

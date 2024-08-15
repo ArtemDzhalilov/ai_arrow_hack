@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/playercreation.css' %}" type="text/css" />
+{% endblock css %}
+
+{% block content %}
+    <!-- no tienes que crear body, ya está definido en la template -->
+    <div id="overlay">
+        <div id="loading-popup">
+            <p>Creating new player...</p>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <h1>Player Creation</h1>
+        <h4>Who's the hero who will save the world?</h4>
+    </div>
+
+    <br>
+
+    <form action="{% url 'playerSelection' %}" method="post" id="playerinfo">
+        {% csrf_token %}
+    
+        <h2>1. Choose your name:</h2>
+        <input class="textInput" id="font2" type="text" name="name" placeholder="Write the name of your player." autocomplete="off" required>
+
+        <br>
+        <br>
+
+        <h2>2. Choose your race:</h2>
+        <div align="center" class="itemList">
+        {% for race in races %}
+        <div class="listItem" onclick="selectRace(event)">
+            <h2 align="center"><img align="center" height=50 src="media/entity/icons/default/{{race|lower}}.png" alt="{{ race }} img"></h2>
+            <h2 align="center" id="font2">{{ race }}</h2>
+            <input type="radio" name="race" value="{{ race }}" 
+            {% if forloop.first %}required{% endif %}/>
+        </div>
+        {% endfor %}
+        </div>
+
+        <br>
+
+        <h2>3. Choose your class:</h2>
+        <h4 align="center">(Optional)</h4>
+        <div align="center" class="itemList">
+            {% for class in classes %}
+            <div class="listItem" onclick="selectItem(event)">
+                <h2 align="center"><img align="center" height=50 src="media/entity/icons/default/{{class|lower}}.png" alt="{{ class }} img"></h2>
+                <h2 align="center" id="font2">{{ class }}</h2>
+                <input type="radio" name="class" value="{{ class }}"/>
+            </div>
+            {% endfor %}
+        </div>
+
+        <br>
+
+        <h2>4. Choose your weapon:</h2>
+        <div align="center" class="weaponList">
+            {% for weapon in weapons %}
+            <div class="listWeapon" onclick="selectWeapon(event)">
+                <h1 align="center" id="font2">{{weapon.name}}</h1>
+                <h2 align="center" id="font2"><img align="center" height=75 src="{{weapon.image.url}}" alt="{{weapon.name}} image"></h2>
+                <h2 align="center" id="font2">Damage:
+                    {% if weapon.damage_type == "Physical" %}
+                        <span style="color: orange">{{ weapon.damage }}</span>
+                    {% else %}
+                        <span style="color: cyan">{{ weapon.damage }}</span>
+                    {% endif %}</h2>
+                <h2 align="center" id="font2">Range: {{weapon.range}}</h2>
+                <h2 align="center" id="font2">{% if weapon.is_ranged %}RANGED{% else %}MELEE{% endif %}</h2>
+                <input type="radio" name="weapon_id" value="{{ weapon.id }}"
+                {% if forloop.first %}required{% endif %}/>
+            </div>
+            {% endfor %}
+        </div>
+
+        <br>
+
+        <h2>5. Choose your stats:</h2>
+
+        <p align="center">
+            <h4 align="center">You have <span align="center" id="amount">30</span> points to spend</h4>
+        </p>
+
+        <div align="center" class="statsList" id="items">
+            <div class="statItem">
+                <h2 id="font2">VITALITY</h2>
+                <h2 align="center">
+                    <input align="center" type="number" name="vitality" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+            <div class="statItem">
+                <h2 id="font2" style="color: orange">STRENGTH</h2>
+                <h2 align="center">
+                    <input type="number" name="str" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+            <div class="statItem">
+                <h2 id="font2" style="color: cyan">INTELLIGENCE</h2>
+                <h2 align="center">
+                    <input type="number" name="int" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+            <div class="statItem">
+                <h2 id="font2">DEXTERITY</h2>
+                <h2 align="center">
+                    <input type="number" name="dex" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+            <div class="statItem">
+                <h2 id="font2" style="color: orange">PHY. RES.</h2>
+                <h2 align="center">
+                    <input type="number" name="phyres" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+            <div class="statItem">
+                <h2 id="font2" style="color: cyan">MAG. RES.</h2>
+                <h2 align="center">
+                    <input type="number" name="magres" value="5" min="5" max="35" id="font2">
+                </h2>
+            </div>
+        </div>
+
+        <br>
+
+        <h2>6. Describe yourself:</h2>
+        <input class="textInput" id="font2" type="text" name="physical_description" placeholder="Add a physical description for image generation" autocomplete="off" required>
+
+        <br>
+        <br>
+
+        <h2>7. Select a gift from the gods:</h2>
+        <div align="center" class="weaponList">
+            <div class="listWeapon" onclick="selectGift(event)">
+                <h2 id="font2">GOLD x50</h2>
+                <input type="radio" name="gift" value="gold"/>
+            </div>
+            <div class="listWeapon" onclick="selectGift(event)">
+                <h2 id="font2">GO BACK BONE x5</h2>
+                <input type="radio" name="gift" value="go back bone"/>
+            </div>
+            <div class="listWeapon" onclick="selectGift(event)">
+                <h2 id="font2">HEALTH POTION x5</h2>
+                <input type="radio" name="gift" value="health potion"/>
+            </div>
+            <div class="listWeapon" onclick="selectGift(event)">
+                <h2 id="font2">KEYS x5</h2>
+                <input type="radio" name="gift" value="key"/>
+            </div>
+        <div>
+
+        <br>
+
+        <h2 align="left">8. What's your initial story?</h2>
+        <input class="textInput" id="font2" type="text" name="story" placeholder="Once upon a time..." autocomplete="off" required>
+        
+        <br>
+        <br>
+
+        <h2 align="left">9. That's all!</h2>
+        <input type="hidden" name="create_player" value="True">
+        <input type="hidden" name="campaign_id" value="{{campaign_id}}">
+        <input class="btnSubmit" id="font1" type="submit" value="Create player!" onclick="loading('Creating player','playerselection','playerinfo')">
+    </form>
+
+    <script src="{% static 'js/selectType.js' %}"></script>
+{% endblock content %}

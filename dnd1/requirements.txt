@@ -1,0 +1,13 @@
+django
+pillow
+django-extensions
+pydotplus
+faker
+bokeh
+openai
+langchain
+langchain_openai
+google-generativeai
+numpy
+python-dotenv
+requests

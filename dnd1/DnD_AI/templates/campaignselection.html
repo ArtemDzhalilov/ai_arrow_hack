@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/selection.css' %}"/>
+{% endblock css %}
+
+{% block content %}
+    <div id="overlay">
+        <div id="loading-popup">
+            <p>Creating initial stories...</p>
+        </div>
+    </div>
+    
+
+    <div style="text-align: center;">
+        <h1>Campaign Selection</h1>
+        <h4>Choose the epic adventure of today!</h4>
+    </div>
+    <br>
+    
+    {% for campaign in campaigns %}
+        <form action="{% url 'playerSelection' %}" method="post">
+        {% csrf_token %}
+            <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+            
+            <button type="submit" class="btnCampaign">
+                <div class="campaign-title">
+                    <h1 id="font1" style="margin-bottom:0px">{% if campaign.is_completed %}(COMPLETED) {% endif %}{{ campaign.name }}</h1>
+                    <h2 id="font1" class="player-count">{{ campaign.player_counter }} players</h2>
+                </div>
+                <ul>
+                    <li><h3 id="font1">{{ campaign.objectives_remaining }} objectives remaining</h3></li>
+                    <li><h3 id="font1">{{ campaign.turns }} turns</h3></li>
+                    <li><h3 id="font1">{{ campaign.size_x }}x{{ campaign.size_y }} map</h3></li>
+                    
+                </ul>
+            </button>
+        </form>
+        {% if not forloop.last %}<br>{% endif %}
+    {% endfor %}
+    
+    <hr>
+    <form action="{% url 'campaignCreation' %}" method="post">
+    {% csrf_token %}
+        <button type="submit" class="btnActionWide" onclick="loading('Creating initial stories','campaignselection')">
+            <h2 id="font1">Create New Campaign!</h2>
+        </button>
+    </form>
+{% endblock content %}

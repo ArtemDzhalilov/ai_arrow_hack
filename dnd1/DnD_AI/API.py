@@ -1,0 +1,3 @@
+hf_api_key = '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'
+openai_api_key = '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'
+gemini_api_key = ''

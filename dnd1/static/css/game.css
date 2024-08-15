@@ -1,0 +1,229 @@
+.background::before {
+  content: ''; /* Pseudo-element to create the blur */
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; /* Takes the entirety of the container */
+  height: 100%; 
+  background-image: url('/static/marco_blanco_2.png'); 
+  background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+  background-position: center;
+  /* filter: blur(0.7px); Applies the blur */
+  opacity: 0.4;
+  z-index: -1; /* Puts the blur behind */
+}
+
+.background{
+  margin: 0px;
+}
+
+.text {
+  grid-area: text;
+  margin-top: 12px;
+}
+
+.map {
+  height: 800px;
+  grid-area: map;
+  margin-top: 10px;
+}
+
+@keyframes blink {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+.blink {
+  animation: blink 1s linear infinite;
+}
+
+@keyframes marquee {
+  /*además de transform, existe text-indent*/
+  0% { transform: translateX(0); }
+  5% { transform: translateX(0); }
+  45% { transform: translateX(calc(-100% + 200px)); }
+  55% { transform: translateX(calc(-100% + 200px)); }
+  95% { transform: translateX(0); }
+  100% { transform: translateX(0); }
+}
+
+.animate {
+  display: inline-block; 
+  /*
+  se puede cubic-bezier en vez de linea
+  cubic-bezier(0.2, 0.1, 0.8, 0.9)
+  cubic-bezier(0.1, 0.2, 0.2, 0.1)
+  cubic-bezier(0.25, 0.1, 0.75, 1)
+  */
+  animation: marquee 10s linear infinite;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.text_animation {
+  
+}
+
+.player {
+  width: 400px;
+  grid-area: player;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+.weapon {
+  width: 400px;
+  grid-area: weapon;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.target {
+  width: 400px;
+  grid-area: target;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.targeticon {
+  width: 400px;
+  grid-area: targeticon;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.action {
+  grid-area: action;
+  display: inline-block;
+}
+
+.action form {
+  display: flex;
+}
+
+.lvl {
+  grid-area: lvl;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  background-color: #BCA371;
+  border-radius: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.level {
+  position: absolute;
+  right: 10px;
+  z-index: 3;
+}
+
+.experience-bar {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background-color: aquamarine;
+  border-radius: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+@keyframes colorChange {
+  0%, 100% {
+    background-color: aquamarine;
+  }
+  50% {
+    background-color: orange;
+  }
+}
+
+.levelup-animation {
+  animation-name: colorChange;
+  animation-duration: 2s; /* Ajusta este valor para cambiar la velocidad de la animación */
+  animation-iteration-count: infinite; /* La animación se repetirá indefinidamente */
+  animation-timing-function: ease-in-out; /* Esto hará que la animación tenga un ritmo sinoidal */
+}
+
+.experience-text {
+  padding-left: 10px;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.maxExperience {
+  
+}
+
+.grid-container {
+  display: grid;
+  grid-gap: 7px;
+  grid-template-rows: repeat(6, auto);
+  grid-template-areas:
+    'map map text text player weapon'
+    'map map text text player weapon'
+    'map map text text player weapon'
+    'map map text text target targeticon'
+    'action action action action target targeticon'
+    'lvl lvl lvl lvl lvl lvl';
+  grid-auto-rows: 0;
+}
+
+.history {
+  height: 800px;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 10px;
+  padding: 1.5%;
+  overflow-y: auto;
+  font-size: 20px;
+}
+
+.history::-webkit-scrollbar {
+  display: none;
+}
+
+.txtAction {
+  color: black;
+  padding-left: 1.5%;
+  border-style: none;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  height: 38px;
+  width: 80%;
+  margin: 0px;
+}
+
+.txtAction::placeholder { 
+  color: gray; 
+}
+
+.btnAction {
+  width: 20%;
+  border-style: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  height: 40px;
+  background-color: #D62828;
+  color: white;
+  margin: 0px;
+}
+
+.btnAction:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+#promptInput {
+  font-family: 'Sixtyfour', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+      "BLED" 0,
+      "SCAN" 0;
+}

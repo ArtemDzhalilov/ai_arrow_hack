@@ -1,0 +1,88 @@
+.grid-container {
+    display: grid;
+    grid-gap: 10px;
+    grid-template:
+      'logo logo logo logo about wiki'
+      'map map text text player weapon'
+      'map map text text target target'
+      'action action action action target target'
+      'lvl lvl lvl lvl lvl lvl';
+    
+}
+
+.container {
+    margin-top: 0px;
+    padding-top: 0px;
+    position: relative;
+}
+
+/*
+.container::before {
+    content: ''; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: calc(100vh - 140px); 
+    background-image: url('/static/Background.png'); 
+    background-size: cover; 
+    background-position: center;
+    opacity: 0.4;
+    z-index: -1; 
+}
+*/
+
+.background::before {
+    background-color: black;
+    content: ''; /* Pseudo-element to create the blur */
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; /* Takes the entirety of the container */
+    height: 100vh; 
+    background-image: url('/static/Background.png'); 
+    background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+    background-position: center;
+    /* filter: blur(0.7px); Applies the blur */
+    opacity: 0.4;
+    z-index: -1; /* Puts the blur behind */
+}
+
+.content {
+    padding: 150px;
+    text-align: center;
+    margin-bottom: -80px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.btnNC {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #D62828;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.btnSC {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: forestgreen;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.btn:last-child {
+    margin-right: 0;
+}
