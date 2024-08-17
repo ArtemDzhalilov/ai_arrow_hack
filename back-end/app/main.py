@@ -1,6 +1,7 @@
 # app/main.py
+import torch
 from fastapi import FastAPI, Depends, HTTPException, Form, BackgroundTasks, Query
-from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
+from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse, StreamingResponse
 from fastapi.requests import Request
 from sqlalchemy.orm import Session
 import models, schemas, crud
@@ -21,6 +22,7 @@ import subprocess
 from fastapi.middleware.cors import CORSMiddleware
 import torchaudio
 from speechbrain.pretrained import EncoderClassifier
+from TTS.api import TTS
 
 models.Base.metadata.create_all(bind=engine)
 

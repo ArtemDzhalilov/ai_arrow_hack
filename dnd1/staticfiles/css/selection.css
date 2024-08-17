@@ -1,0 +1,195 @@
+html {
+	height: 100%;
+	width: 100%;
+	margin: auto;
+}
+
+a {
+	outline: none;
+	text-decoration: none;
+	color: grey;
+}
+
+a:hover {
+	border-style: solid;
+	border-bottom-width: 10px;
+	border: #000000;
+	color: white;
+}
+
+.campaign {
+	display: flexbox;
+	background-color: #D62828;
+  	border: solid;
+	border-width: 0px;
+  	border-radius: 10px;
+	padding: 5px;
+	box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+.player {
+	display: flexbox;
+	background-color: #D62828;
+	border: solid;
+	border-width: 0px;
+	border-radius: 10px;
+	padding: 5px;
+	box-shadow: 0px 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+.background {
+	padding-left: 50px;
+	padding-right: 50px;
+	background-color: #212529;
+	color: white;
+}
+
+.btnAction {
+	display: relative;
+	margin-left: 90%;
+	border-style: none;
+	border-radius: 10px;
+	height: 80px;
+	width: 80px;
+	background-color: #D62828;
+	color: white;
+	padding-right: 20px;
+}
+
+.btnAction:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+.btnActionWide {
+	display: relative;
+	/*margin-left: 90%;*/
+	border-style: none;
+	border-radius: 10px;
+	height: 80px;
+	width: 100%;
+	background-color: #D62828;
+	color: white;
+	padding-right: 20px;
+}
+
+.btnActionWide:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+.btnCampaign {
+	display: relative;
+	/*margin-left: 90%;*/
+	border-style: none;
+	border-radius: 10px;
+	height: fit-content;
+	width: 100%;
+	background-color: #D62828;
+	color: white;
+	padding-left: 20px;
+	text-align: left;
+	position: relative; 
+    z-index: 1;  
+}
+
+.player-count {
+    position: relative;
+    right: 0;  
+    z-index: 2; 
+	padding-right: 20px; 
+}
+
+/*
+.player-count {
+    position: relative;
+    right: 0;  
+    display: none;  
+    z-index: 2;  
+}
+
+.btnCampaign:hover .player-count {
+    display: block;  
+}
+*/
+
+.campaign-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-title {
+    display: flex;
+    justify-content: left;
+}
+
+.btnCampaign:hover {
+    background-color: #ff6f6f;
+    z-index: 3;  /* añade esto para asegurarte de que el botón se muestre por encima de los otros elementos cuando se haga hover sobre él */
+}
+
+.campName {
+	font-size: 30px;
+    /**/
+	-webkit-text-stroke: 1px black;
+}
+
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.95); /* Subtransparent color */
+    z-index: 9999; /* Puts the overlay over everything */
+    display: none; /* Initially hidden */
+}
+
+#loading-popup {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #0000; /* Background color of the popup */
+    padding: 100px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+	white-space: nowrap;
+}
+
+
+#font1 {
+	font-family: "Sixtyfour", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	font-variation-settings:
+		"BLED" 0,
+		"SCAN" 0;
+}
+
+#font2 {
+	font-family: "Workbench", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 700;
+	font-style: normal;
+	font-variation-settings:
+		"BLED" 0,
+		"SCAN" 0;
+}
+
+/*
+	brown #462e2e
+	red #ff6f6f
+
+	god ones:
+		black: #333333
+		red: #D62828
+		grey: #8DA1B9
+		#454c54
+		#212529
+		brown: #BCA371
+		green: #21D19F
+*/
