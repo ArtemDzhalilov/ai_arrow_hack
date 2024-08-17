@@ -10,7 +10,7 @@ import numpy as np
 model_name = "second-state/E5-Mistral-7B-Instruct-Embedding-GGUF"
 model_file = "e5-mistral-7b-instruct-Q6_K.gguf"
 model_path = hf_hub_download(model_name, filename=model_file)
-openai.api_key = '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'
+openai.api_key = 'sk-M6nTKyYUrj_wB7u8VCZMAb4kP6ErJ0s8sxlh9Iu4xQT3BlbkFJ-MHp0LwkJT11Fbfteppyy2B3lRX4x9NfMD20bjT-cA'
 
 
 llm = Llama(

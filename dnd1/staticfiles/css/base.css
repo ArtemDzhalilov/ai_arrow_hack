@@ -1,0 +1,116 @@
+body {
+    display: flex;       /* Usa Flexbox */
+    flex-direction: column; /* Orientación vertical */
+    min-height: 100vh;   /* Asegura que el cuerpo tenga al menos la altura de la ventana */
+    margin: 0;           
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+    color: grey;
+}
+
+a:hover {
+    border-style: solid;
+    border-bottom-width: 10px;
+    border: #000000;
+    color: white;
+}
+
+hr {
+    flex: none; /* Anula el comportamiento de flexión */
+    height: 0px; /* O la altura que desees */
+    width: 100%; /* O el ancho que desees */
+}
+
+footer {
+    text-align: center;
+    width: 100%;
+}
+
+.background {
+    padding-left: 50px;
+    padding-right: 50px;
+    background-color: #212529;
+    color: white;
+}
+
+.container {
+    flex: 1;            /* Permite que el contenedor crezca para ocupar el espacio disponible */
+}
+
+/* Esto aplica a toda la barra de desplazamiento */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Ruta de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+    background: transparent; /* Hace que la ruta de la barra de desplazamiento sea transparente */
+}
+ 
+/* Handle de la barra de desplazamiento */
+::-webkit-scrollbar-thumb {
+    background: grey; 
+    border: 2px solid #212529; /* Añade un borde de color #212529 */
+    border-radius: 5px; /* Añade bordes redondeados al handle de la barra de desplazamiento */
+}
+
+/* Handle de la barra de desplazamiento al pasar el mouse */
+::-webkit-scrollbar-thumb:hover {
+    background: white; 
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: none;
+}
+
+#loading-popup {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #0000;
+    padding: 100px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+    white-space: nowrap;
+}
+
+#font1 {
+    font-family: 'Sixtyfour', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "BLED" 0,
+        "SCAN" 0;
+}
+
+#font2 {
+    font-family: 'Workbench', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings:
+        "BLED" 0,
+        "SCAN" 0;
+}

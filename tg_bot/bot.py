@@ -339,7 +339,7 @@ async def check_hardskills(message: types.Message, state: FSMContext):
     if not data or not data.get('resume_score'):
         await send_translated_message(message, state, 'check_resume_first')
         return
-    await state.update_data(current_question=0, total_questions=1, previous_questions="", requirements=requirements,
+    await state.update_data(current_question=0, total_questions=10, previous_questions="", requirements=requirements,
                             last_answer='', last_question='', results_sum=0)
     await state.set_state(Form.waiting_for_hardskill_answer)
     previous_questions = ''
@@ -414,7 +414,7 @@ async def check_softskills(message: types.Message, state: FSMContext):
     if data['result_score'] is not None:
         await send_translated_message(message, state, 'interview_finished')
         return
-    if not data or not data.get('hard_skills_score'):
+    if not data or data.get('hard_skills_score')==None:
         await send_translated_message(message, state, 'check_hardskills_first')
         return
 

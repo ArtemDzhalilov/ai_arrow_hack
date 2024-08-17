@@ -1,0 +1,122 @@
+input {
+	height: 30px;	
+	width: 100px;
+	font-size: 25px;
+}
+
+.btnSubmit {
+	text-align: center;
+	border-style: none;
+	border-radius: 10px;
+	height: 80px;
+	width: 100%;
+	background-color: #D62828;
+	color: white;
+	padding-right: 20px;
+	font-size: 20px;
+}
+
+.btnSmall {
+	text-align: center;
+	border-style: none;
+	border-radius: 10px;
+	height: 40px;
+	width: 200px;
+	background-color: #D62828;
+	color: white;
+	padding-right: 20px;
+	font-size: 20px;
+}
+
+.btnSubmit:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+.textInput {
+	border-style: none;
+	border-radius: 10px;
+	height: 40px;
+	width: 100%;
+	padding-left: 10px;
+	font-size: 25px;
+}
+
+.itemList {
+	width: 100%;
+}
+
+.listItem {
+	display: inline-block;
+	border-style: none;
+	border-radius: 10px;
+	background-color: #D62828;
+	color: white;
+	padding: 0.5%;
+	margin: 0.5%;
+	width: 9%;
+}
+
+.listItem:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+.listItem input{
+	display:none;
+}
+
+.statList {
+	width: 100%;
+  justify-content: space-between;
+}
+
+.statItem {
+	display: inline-block;
+	border-style: none;
+  border-radius: 10px;
+	background-color: #D62828;
+	color: white;
+	padding: 0.5%;
+	margin: 0.5%;
+	width: 13%;
+}
+
+.statItem h2 {
+	text-align: center;
+}
+
+.statItem div {
+	justify-content: center;
+  align-items: center;
+}
+
+.statItem input {
+	text-align: center;
+	border-style: none;
+  border-radius: 10px;
+}
+
+.weaponList {
+	width: 100%;
+}
+
+.listWeapon {
+	display: inline-block;
+	border-style: none;
+	border-radius: 10px;
+	background-color: #D62828;
+	color: white;
+	padding: 0.5%;
+	margin: 0.5%;
+	width: 22%;
+}
+
+.listWeapon:hover {
+	background-color: #ff6f6f;
+	color: white;
+}
+
+.listWeapon input{
+	display:none;
+}
