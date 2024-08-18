@@ -6,7 +6,7 @@ from llama_cpp import Llama
 from torch.nn.functional import cosine_similarity
 import openai
 import logging
-openai.api_key = "sk-M6nTKyYUrj_wB7u8VCZMAb4kP6ErJ0s8sxlh9Iu4xQT3BlbkFJ-MHp0LwkJT11Fbfteppyy2B3lRX4x9NfMD20bjT-cA"
+openai.api_key = ""
 lang_dict = {
     'ru': 'Russian',
     'en': 'English',
