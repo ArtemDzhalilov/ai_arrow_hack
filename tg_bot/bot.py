@@ -1,7 +1,13 @@
 import logging
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
+try:
+    from aiogram.client.default import DefaultBotProperties
+except ImportError:
+    DefaultBotProperties = None
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters import Command
@@ -22,13 +28,22 @@ from pydub import AudioSegment
 from concurrent.futures import ThreadPoolExecutor
 from stt import STT
 
-API_TOKEN = '7316928282:AAEw4DLPo6cAwMgFQ1fIcBPuw550qZj-2us'
-BACKEND_URL = 'http://localhost:8000'
+ROOT_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT_DIR / ".env")
+
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000").rstrip("/")
 
 logging.basicConfig(level=logging.INFO)
 
+if not API_TOKEN:
+    raise RuntimeError("TELEGRAM_BOT_TOKEN is not configured. Set it in the root .env file.")
+
 # Инициализация бота и диспетчера
-bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
+if DefaultBotProperties is None:
+    bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
+else:
+    bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher(storage=MemoryStorage())
 
 # Определение состояний

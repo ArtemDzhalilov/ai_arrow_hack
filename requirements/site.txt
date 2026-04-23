@@ -1,0 +1,4 @@
+-r common.txt
+
+streamlit>=1.35,<2.0
+pandas>=2.2,<3.0

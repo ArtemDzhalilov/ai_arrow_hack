@@ -1,8 +1,15 @@
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 import streamlit as st
 import requests
 import pandas as pd
-# Укажите URL вашего FastAPI backend
-API_URL = "http://localhost:8000"
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT_DIR / ".env")
+
+API_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000").rstrip("/")
 
 # Инициализация сессий
 if 'logged_in' not in st.session_state:
@@ -78,6 +85,9 @@ def create_job_page():
     job_name = st.text_input("Job Name")
     uploaded_file = st.file_uploader("Job requirements", type="txt")
     if st.button("Create Job"):
+        if uploaded_file is None:
+            st.error("Загрузите файл с требованиями к вакансии")
+            return
         response = requests.post(f"{API_URL}/create_job", json={
             "name": job_name,
             "file": uploaded_file.read().decode("utf-8"),

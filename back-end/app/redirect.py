@@ -1,4 +1,7 @@
 # app/main.py
+import os
+from pathlib import Path
+
 from fastapi import FastAPI, Depends, HTTPException, Form, BackgroundTasks, Query
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.requests import Request
@@ -13,14 +16,27 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pydub import AudioSegment
-import os
 import io
 import wave
+from dotenv import load_dotenv
 from vosk import Model, KaldiRecognizer
 import subprocess
 from fastapi.middleware.cors import CORSMiddleware
 import torchaudio
 from speechbrain.pretrained import EncoderClassifier
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
+
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "FRONTEND_ORIGINS",
+        "http://127.0.0.1:7000,http://localhost:7000,http://127.0.0.1:8501,http://localhost:8501",
+    ).split(",")
+    if origin.strip()
+]
+GAME_PUBLIC_URL = os.getenv("GAME_PUBLIC_URL", "http://127.0.0.1:7000/game")
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -28,7 +44,7 @@ app1 = FastAPI()
 
 app1.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:7000"],  # Замените на URL вашего frontend
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -51,7 +67,7 @@ def redirect(user_tg_id: str = Query(...), db: Session = Depends(get_db), backgr
         'campaign_id': [room_id],
         'player_id': [player_id]
     }
-    external_url = "http://83.239.141.8:27270/game"
+    external_url = GAME_PUBLIC_URL
 
     # HTML с встроенным скриптом для отправки данных
     html_content = f"""

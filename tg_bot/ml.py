@@ -1,15 +1,25 @@
+import os
 import time
-import torch
-import torch.nn.functional as F
+from pathlib import Path
+
+from dotenv import load_dotenv
 from huggingface_hub import hf_hub_download
 from llama_cpp import Llama
+from openai import OpenAI
+import torch
 from torch.nn.functional import cosine_similarity
-import openai
-import logging
-openai.api_key = ""
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT_DIR / ".env")
+
+OPENAI_UNAVAILABLE = "OpenAI API key is not configured or the request failed."
+OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_CLIENT = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+
 lang_dict = {
-    'ru': 'Russian',
-    'en': 'English',
+    "ru": "Russian",
+    "en": "English",
 }
 
 # Загрузка старой модели для эмбеддингов
@@ -21,7 +31,7 @@ llm_old = Llama(
     n_ctx=16000,
     n_threads=32,
     n_gpu_layers=0,
-    embedding=True
+    embedding=True,
 )
 
 new_model_name = "lmstudio-community/gemma-2-27b-it-GGUF"
@@ -39,64 +49,62 @@ llm_new = Llama(
 print("All is ready!")
 
 
-# Функция для тестирования скорости работы модели
 def test_model_speed(model, prompt="Test prompt"):
     start_time = time.time()
-    response = model(prompt, max_tokens=50)
+    model(prompt, max_tokens=50)
     elapsed_time = time.time() - start_time
     return elapsed_time
 
 
-#local_model_time = test_model_speed(llm_old)
-# Если локальная модель работает медленнее 10 секунд, переключаемся на использование OpenAI API
-#if local_model_time > 10:
-#    print("Local model is slow, switching to GPT-4 API...")
-#    use_openai_api = True
-#else:
-#    print("Using local model.")
-#    use_openai_api = False
-use_openai_api = True
+use_openai_api = OPENAI_CLIENT is not None
+
+
+def _chat_completion(prompt):
+    if OPENAI_CLIENT is None:
+        return OPENAI_UNAVAILABLE
+
+    try:
+        response = OPENAI_CLIENT.chat.completions.create(
+            model=OPENAI_CHAT_MODEL,
+            messages=[
+                {"role": "system", "content": "You are an AI assistant."},
+                {"role": "user", "content": prompt},
+            ],
+        )
+        return (response.choices[0].message.content or "").strip()
+    except Exception:
+        return OPENAI_UNAVAILABLE
+
 
 def generate_role(requirements):
     prompt = f"Generate the role that best fits the LLM for an interview based on the following description: {requirements}. Output ONLY the role."
 
     if use_openai_api:
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "system", "content": "You are an AI assistant."},
-                          {"role": "user", "content": prompt}],
-            )
-            return response['choices'][0]['message']['content'].strip()
-        except:
-            return 'OpenAI API is not available in your country.'
-    else:
-        response = llm_new(prompt)
-        return response['choices'][0]['text'].strip()
+        return _chat_completion(prompt)
+
+    response = llm_new(prompt)
+    return response["choices"][0]["text"].strip()
 
 
 def create_question_with_answer(history, requirements, lang):
-    history_text = f"During the interview, the following questions have already been asked, and the following answers have been received: {history}." if len(
-        history) > 0 else ""
+    history_text = (
+        f"During the interview, the following questions have already been asked, and the following answers have been received: {history}."
+        if len(history) > 0
+        else ""
+    )
     role = generate_role(requirements)
     prompt = f"""You are conducting an interview for the position of {role}. Job description: {requirements}. {history_text}
     Your task is to generate the next question so that it best fits the job description and assesses the interviewee's competencies in the most critical areas. The question should have a clear answer and focus solely on algorithms and data structures.
-    You should generate only the question. You must use {lang_dict[lang]} in your question. 
+    You should generate only the question. You must use {lang_dict[lang]} in your question.
     """
 
     if use_openai_api:
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "system", "content": "You are an AI assistant."},
-                          {"role": "user", "content": prompt}],
-            )
-            question = response['choices'][0]['message']['content'].strip()
-        except:
-            return 'OpenAI API is not available in your country.', 'OpenAI API is not available in your country.'
+        question = _chat_completion(prompt)
+        if question == OPENAI_UNAVAILABLE:
+            return OPENAI_UNAVAILABLE, OPENAI_UNAVAILABLE
     else:
         response = llm_new(prompt)
-        question = response['choices'][0]['text'].strip()
+        question = response["choices"][0]["text"].strip()
 
     answer = answer_question(question, role, lang_dict[lang])
     return question, answer
@@ -104,45 +112,31 @@ def create_question_with_answer(history, requirements, lang):
 
 def answer_question(question, role, lang):
     prompt = f"""
-    You are one of the best {role} in the world, and you are interviewing at an IT company. Your task is to answer the following question as accurately as possible: {question}. Your answer should be concise and precise. You only need to answer the question. You must use {lang} in your question.  
+    You are one of the best {role} in the world, and you are interviewing at an IT company. Your task is to answer the following question as accurately as possible: {question}. Your answer should be concise and precise. You only need to answer the question. You must use {lang} in your question.
 """
 
     if use_openai_api:
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "system", "content": "You are an AI assistant."},
-                          {"role": "user", "content": prompt}],
-            )
-            return response['choices'][0]['message']['content'].strip()
-        except:
-            return 'OpenAI API is not available in your country.'
-    else:
-        response = llm_new(prompt)
-        return response['choices'][0]['text'].strip()
+        return _chat_completion(prompt)
+
+    response = llm_new(prompt)
+    return response["choices"][0]["text"].strip()
+
+
 def translate_to_english(text):
     prompt = f"Translate the following text to English: {text}"
     if use_openai_api:
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "system", "content": "You are an AI assistant."},
-                          {"role": "user", "content": prompt}],
-            )
-            return response['choices'][0]['message']['content'].strip()
-        except:
-            return 'OpenAI API is not available in your country.'
-    else:
-        response = llm_new(prompt)
-        return response['choices'][0]['text'].strip()
+        return _chat_completion(prompt)
+
+    response = llm_new(prompt)
+    return response["choices"][0]["text"].strip()
 
 
 def compare_answers(user_answer, correct_answer, lang):
-    if lang == 'ru':
+    if lang == "ru":
         user_answer = translate_to_english(user_answer)
         correct_answer = translate_to_english(correct_answer)
     with torch.no_grad():
-        if correct_answer=='OpenAI API is not available in your country.':
+        if correct_answer == OPENAI_UNAVAILABLE:
             return 0
         embedding1 = llm_old.embed(user_answer)
         embedding2 = llm_old.embed(correct_answer)

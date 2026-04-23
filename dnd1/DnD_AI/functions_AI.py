@@ -2,6 +2,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 import os
+from pathlib import Path
 from random import randint, choice
 import openai
 
@@ -29,49 +30,58 @@ except Exception as e:
 # its required to have either the openai or the huggingface api key
 # its required to have the google gemini api key
 
-# YES I KNOW...
-# aaaaaall the possible ways to import the api keys (the users are... unpredictable) are:
-#   1. having API.py in the same file than this file
-#   2. having api_keys.env in root
-#   3. having api_keys.env in the same folder than this file
-#   4. having API.py in the root, two ways to import it
-#   5. having any .env file in any folder in the root or above (damn... jesus christ)
-try:    # 1
-    from .API import openai_api_key, hf_api_key, gemini_api_key
-    print('loaded')
-except:
-    try:    # 2
-        from dotenv import load_dotenv
-        load_dotenv('api_keys.env')
+ROOT_DIR = Path(__file__).resolve().parents[2]
+MODULE_DIR = Path(__file__).resolve().parent
 
-        openai_api_key = os.getenv('openai_api_key') # its required to have either the openai 
-        hf_api_key = os.getenv('hf_api_key')         # or the huggingface api key
-        gemini_api_key = os.getenv('gemini_api_key') # its required to have the google gemini api key
-    except:
-        try:   # 3
-            load_dotenv('DnD_AI/api_keys.env')
+try:
+    from dotenv import load_dotenv
+except Exception:
+    load_dotenv = None
 
-            openai_api_key = os.getenv('openai_api_key')
-            hf_api_key = os.getenv('hf_api_key')        
-            gemini_api_key = os.getenv('gemini_api_key')
-        except:
-            import sys
-            sys.path.append("..")  # Añade la carpeta superior al PATH de Python
+if load_dotenv is not None:
+    for env_path in (
+        ROOT_DIR / ".env",
+        ROOT_DIR / "api_keys.env",
+        MODULE_DIR / "api_keys.env",
+    ):
+        if env_path.exists():
+            load_dotenv(env_path, override=False)
+    load_dotenv(override=False)
 
-            try:   # 4
-                from .API import openai_api_key, hf_api_key, gemini_api_key 
-            except:
-                try: 
-                    from API import openai_api_key, hf_api_key, gemini_api_key   
-                except:
-                    try:   # 5
-                        load_dotenv()
-                        openai_api_key = os.getenv('openai_api_key')
-                        hf_api_key = os.getenv('hf_api_key')        
-                        gemini_api_key = os.getenv('gemini_api_key')
-                    except:
-                        pass # you just don't have api keys... so you can't use the AI functions
-                
+
+def _get_env_value(*names):
+    for name in names:
+        value = os.getenv(name)
+        if value:
+            return value
+    return ""
+
+
+openai_api_key = _get_env_value("OPENAI_API_KEY", "openai_api_key")
+hf_api_key = _get_env_value("HF_API_KEY", "hf_api_key")
+gemini_api_key = _get_env_value("GEMINI_API_KEY", "gemini_api_key")
+
+if not any((openai_api_key, hf_api_key, gemini_api_key)):
+    try:
+        from .API import gemini_api_key as local_gemini_api_key
+        from .API import hf_api_key as local_hf_api_key
+        from .API import openai_api_key as local_openai_api_key
+
+        openai_api_key = local_openai_api_key or openai_api_key
+        hf_api_key = local_hf_api_key or hf_api_key
+        gemini_api_key = local_gemini_api_key or gemini_api_key
+    except Exception:
+        try:
+            from API import gemini_api_key as local_gemini_api_key
+            from API import hf_api_key as local_hf_api_key
+            from API import openai_api_key as local_openai_api_key
+
+            openai_api_key = local_openai_api_key or openai_api_key
+            hf_api_key = local_hf_api_key or hf_api_key
+            gemini_api_key = local_gemini_api_key or gemini_api_key
+        except Exception:
+            pass
+
 NO_API_KEYS_STR = "Sorry dude, you didn't set the api keys or you ran out of balance. Please set the api keys or try again later. Jaja salu2"
 
 def NO_API_KEYS_IMG(): return f"media/entity/icons/no_api_keys{randint(1,3)}.png"
@@ -87,8 +97,8 @@ illustrations_dir = "media/illustrations/"
 
 try:
     client_openai = OpenAI(api_key=openai_api_key)
-except:
-    pass
+except Exception:
+    client_openai = None
 
 
 def image_generator_DallE(prompt):

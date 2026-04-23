@@ -1,7 +1,10 @@
 import logging
+import os
 import time
+from pathlib import Path
 
 from celery import Celery
+from dotenv import load_dotenv
 from database import SessionLocal, engine
 from schemas import File_with_id
 from models import File, Candidate
@@ -12,11 +15,14 @@ import dnd_module as dnd
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
 
 app = Celery(
     'tasks',
-    broker='redis://127.0.0.1:6379/0',
-    backend='redis://127.0.0.1:6379/0'
+    broker=REDIS_URL,
+    backend=REDIS_URL,
 )
 
 
@@ -62,6 +68,5 @@ def celery_score_softskills(room_id: int, user_tg: str):
     db.commit()
 
     return soft_skills_score
-
 
 

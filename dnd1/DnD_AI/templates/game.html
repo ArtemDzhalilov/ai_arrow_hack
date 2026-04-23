@@ -200,7 +200,7 @@
             const formData = new FormData();
             formData.append('audio_file', audioBlob);
 
-            fetch('http://localhost:8000/transcribe_audio', {
+            fetch('{{ backend_url }}/transcribe_audio', {
                 method: 'POST',
                 body: formData,
             })

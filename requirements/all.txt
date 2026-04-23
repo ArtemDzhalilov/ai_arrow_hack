@@ -1,0 +1,5 @@
+-r common.txt
+-r game.txt
+-r backend.txt
+-r bot.txt
+-r site.txt

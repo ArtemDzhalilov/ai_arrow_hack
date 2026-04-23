@@ -2,6 +2,7 @@ from django.shortcuts import render
 #from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.conf import settings
 
 from .models import *
 from .functions import *
@@ -599,6 +600,7 @@ def game(request):
                             'weapon_lvl_label'  : weapon_lvl_label,
                             'campaign_id'       : campaign_id,
                             'exp_bar'           : exp_bar,
+                            'backend_url'       : settings.BACKEND_URL,
                             })
     else:
 
@@ -628,6 +630,7 @@ def game(request):
                             'campaign_id'    : campaign_id,
                             'map_script'     : map_script,
                             'map_div'        : map_div,
+                            'backend_url'    : settings.BACKEND_URL,
                        })
 @csrf_exempt
 @require_POST

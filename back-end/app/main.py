@@ -1,5 +1,6 @@
 # app/main.py
 import torch
+from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, Form, BackgroundTasks, Query
 from fastapi.responses import JSONResponse, RedirectResponse, HTMLResponse, StreamingResponse
 from fastapi.requests import Request
@@ -17,6 +18,7 @@ from pydub import AudioSegment
 import os
 import io
 import wave
+from dotenv import load_dotenv
 from vosk import Model, KaldiRecognizer
 import subprocess
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,13 +26,26 @@ import torchaudio
 from speechbrain.pretrained import EncoderClassifier
 from TTS.api import TTS
 
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
+
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "FRONTEND_ORIGINS",
+        "http://127.0.0.1:7000,http://localhost:7000,http://127.0.0.1:8501,http://localhost:8501",
+    ).split(",")
+    if origin.strip()
+]
+REDIRECT_PUBLIC_URL = os.getenv("REDIRECT_PUBLIC_URL", "http://127.0.0.1:10000/redirect")
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:7000"],  # Замените на URL вашего frontend
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -172,7 +187,7 @@ def start_dnd_game(user_tg: schemas.User_tg_id, db: Session = Depends(get_db)):
         print(availible_rooms)
         room_id = availible_rooms[0].id_real
     res = crud.create_player(room_id=room_id, telegram_id=user_tg.telegram_id, db=db)
-    link = f"http://83.239.141.6:27280/redirect?user_tg_id={user_tg.telegram_id}"
+    link = f"{REDIRECT_PUBLIC_URL}?user_tg_id={user_tg.telegram_id}"
     return link
 
 

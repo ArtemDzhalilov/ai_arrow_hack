@@ -1,6 +1,48 @@
-/back-end/app/vosk-model-en-us-0.22/
-/back-end/app/vosk-model-ru-0.42/
-/back-end/app/tmp/
-/back-end/app/audio_cache/
-/tg_bot/vosk-model-en-us-0.22/
-/tg_bot/vosk-model-ru-0.42/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editors and notebooks
+.idea/
+.vscode/
+.ipynb_checkpoints/
+*.ipynb
+
+# Secrets
+.env
+.env.*
+!.env.example
+api_keys.env
+dnd1/DnD_AI/API.py
+
+# Databases and logs
+*.sqlite3
+*.db
+*.log
+
+# Generated project artifacts
+dnd1/staticfiles/
+dnd1/media/illustrations/*
+!dnd1/media/illustrations/.gitkeep
+back-end/app/temp_audio.webm
+back-end/app/temp_audio.wav
+tg_bot/*.save
+
+# Local ML assets
+**/vosk-model-*/
+**/audio_cache/
+**/tmp/
+*.gguf
